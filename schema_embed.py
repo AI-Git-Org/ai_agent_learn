@@ -1,7 +1,12 @@
 import os
+import time
+
 from dotenv import load_dotenv
 
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import (
+    Pinecone,
+    ServerlessSpec
+)
 
 from langchain_google_genai import (
     GoogleGenerativeAIEmbeddings
@@ -15,8 +20,9 @@ from langchain.text_splitter import (
     RecursiveCharacterTextSplitter
 )
 
-from langchain.schema import Document
-
+from langchain.schema import (
+    Document
+)
 
 load_dotenv()
 
@@ -29,6 +35,10 @@ INDEX_NAME=os.getenv(
     "PINECONE_INDEX"
 )
 
+GEMINI_API_KEY=os.getenv(
+    "GEMINI_API_KEY"
+)
+
 
 pc=Pinecone(
     api_key=PINECONE_API_KEY
@@ -37,9 +47,15 @@ pc=Pinecone(
 
 if INDEX_NAME not in pc.list_indexes().names():
 
+    print(
+        "Creating Pinecone index..."
+    )
+
     pc.create_index(
         name=INDEX_NAME,
+
         dimension=1024,
+
         metric="cosine",
 
         spec=ServerlessSpec(
@@ -48,20 +64,36 @@ if INDEX_NAME not in pc.list_indexes().names():
         )
     )
 
-    print("Created index")
+    while not pc.describe_index(
+        INDEX_NAME
+    ).status["ready"]:
+
+        time.sleep(1)
+
+    print(
+        "Index ready"
+    )
+
+else:
+
+    print(
+        "Index already exists"
+    )
 
 
 embeddings=GoogleGenerativeAIEmbeddings(
     model="models/text-embedding-004",
-    google_api_key=os.getenv(
-        "GEMINI_API_KEY"
-    ),
+
+    google_api_key=GEMINI_API_KEY,
+
     task_type="retrieval_document",
+
     output_dimensionality=1024
 )
 
 
 docs=[]
+
 
 for i in range(1,7):
 
@@ -78,6 +110,7 @@ for i in range(1,7):
         docs.append(
             Document(
                 page_content=text,
+
                 metadata={
                     "source":filename
                 }
@@ -95,6 +128,16 @@ chunks=splitter.split_documents(
     docs
 )
 
+
+for i,chunk in enumerate(
+    chunks
+):
+
+    chunk.metadata[
+        "chunk_id"
+    ]=i
+
+
 print(
     f"Total chunks: {len(chunks)}"
 )
@@ -102,11 +145,13 @@ print(
 
 vector_store=PineconeVectorStore.from_documents(
     documents=chunks,
+
     embedding=embeddings,
+
     index_name=INDEX_NAME
 )
 
 
 print(
-    "Embeddings stored in Pinecone"
+    "\nEmbeddings stored successfully"
 )
