@@ -1,0 +1,29 @@
+Table Name: Tb_ccy_master
+
+Purpose:
+Stores master information about supported currencies used throughout the financial system.
+
+Business Meaning:
+Acts as a reference table for currency definitions. Other financial tables use this table to validate currency codes.
+
+Columns:
+
+Currency_code
+- Type: VARCHAR(3)
+- Description: Standard currency code.
+- Examples: USD, INR, EUR
+
+Day_count
+- Type: VARCHAR(20)
+- Description: Day count convention associated with the currency.
+- Examples: Actual/360, Actual/365
+
+Relationships:
+- Referenced by:
+    Tb_contract_balance.Currency
+    Tb_use_rate.Currency
+    Tb_ticket_balance.Currency
+    Tb_TP_rate.Currency
+
+Primary Key:
+Currency_code

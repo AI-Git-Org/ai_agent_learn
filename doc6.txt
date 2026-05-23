@@ -1,0 +1,47 @@
+Table Name: Tb_TP_rate
+
+Purpose:
+Stores transfer pricing rates.
+
+Business Meaning:
+Contains transfer pricing information for financial calculations.
+
+Columns:
+
+id
+- Type: INT
+- Description: Auto increment identifier.
+
+As_of_date
+- Type: DATE
+- Description: Date for pricing information.
+
+Start_date
+- Type: DATE
+- Description: Start date.
+
+End_date
+- Type: DATE
+- Description: End date.
+
+Bid_rate
+- Type: DECIMAL(10,6)
+- Description: Bid rate.
+
+Offer_rate
+- Type: DECIMAL(10,6)
+- Description: Offer rate.
+
+Tenure
+- Type: VARCHAR(20)
+- Description: Duration.
+
+Currency
+- Type: VARCHAR(3)
+- Description: Currency code.
+
+Relationships:
+Currency → Tb_ccy_master.Currency_code
+
+Primary Key:
+id

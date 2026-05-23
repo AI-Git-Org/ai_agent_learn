@@ -1,0 +1,47 @@
+Table Name: Tb_contract_balance
+
+Purpose:
+Stores contract-level balance sheet information and customer financial metrics.
+
+Business Meaning:
+Represents contract balances with customer rates and profit/loss values.
+
+Columns:
+
+id
+- Type: INT
+- Description: Auto increment identifier.
+
+As_of_date
+- Type: DATE
+- Description: Date for which contract balance is recorded.
+
+Start_date
+- Type: DATE
+- Description: Contract start date.
+
+End_date
+- Type: DATE
+- Description: Contract maturity date.
+
+Amt
+- Type: DECIMAL(18,4)
+- Description: Contract amount.
+
+Cust_rate
+- Type: DECIMAL(10,6)
+- Description: Customer rate.
+
+PnL
+- Type: DECIMAL(18,4)
+- Description: Profit and loss value.
+
+Currency
+- Type: VARCHAR(3)
+- Description: Currency associated with the contract.
+
+Relationships:
+Currency → Tb_ccy_master.Currency_code
+
+Primary Key:
+(id, As_of_date)

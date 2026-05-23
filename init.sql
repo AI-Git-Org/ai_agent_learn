@@ -21,13 +21,15 @@ CREATE TABLE IF NOT EXISTS Tb_LE_code (
 -- Contract Balance
 CREATE TABLE IF NOT EXISTS Tb_contract_balance (
     id INT AUTO_INCREMENT,
-    As_of_date DATE NOT NULL PRIMARY KEY,
+    As_of_date DATE NOT NULL,
     Start_date DATE NULL,
     End_date DATE NULL,
     Amt DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
     Cust_rate DECIMAL(10,6),
     PnL DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
     Currency VARCHAR(3) NOT NULL,
+
+    PRIMARY KEY (id, As_of_date),
 
     CONSTRAINT fk_contract_ccy
     FOREIGN KEY (Currency)
@@ -40,16 +42,18 @@ CREATE TABLE IF NOT EXISTS Tb_contract_balance (
 -- Use Rate
 CREATE TABLE IF NOT EXISTS Tb_use_rate (
     id INT AUTO_INCREMENT,
-    As_of_rate DATE NOT NULL PRIMARY KEY,
+    As_of_rate DATE NOT NULL,
     yc_code VARCHAR(20) NOT NULL,
     Bid_rate DECIMAL(10,6),
     Offer_rate DECIMAL(10,6),
     Tenure VARCHAR(20),
     Currency VARCHAR(3) NOT NULL,
 
+    PRIMARY KEY (id, As_of_rate),
+
     CONSTRAINT fk_use_rate_ccy
     FOREIGN KEY (Currency)
-    REFERENCES Tb_ccy_master(Currency_code)
+    REFERENCES Tb_contract_balance(Currency)
     ON DELETE RESTRICT
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

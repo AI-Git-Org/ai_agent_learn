@@ -1,0 +1,6 @@
+mysql-connector-python
+python-dotenv
+pinecone
+langchain
+langchain-pinecone
+langchain-google-genai

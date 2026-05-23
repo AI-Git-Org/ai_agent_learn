@@ -1,0 +1,47 @@
+Table Name: Tb_ticket_balance
+
+Purpose:
+Stores trade-level or ticket-level balances.
+
+Business Meaning:
+Represents individual trades and their financial values.
+
+Columns:
+
+id
+- Type: INT
+- Description: Auto increment identifier.
+
+As_of_date
+- Type: DATE
+- Description: Date for ticket balance.
+
+Start_date
+- Type: DATE
+- Description: Trade start date.
+
+End_date
+- Type: DATE
+- Description: Trade maturity date.
+
+Amt
+- Type: DECIMAL(18,4)
+- Description: Trade amount.
+
+TP_rate
+- Type: DECIMAL(10,6)
+- Description: Transfer pricing rate.
+
+PnL
+- Type: DECIMAL(18,4)
+- Description: Profit and loss.
+
+Currency
+- Type: VARCHAR(3)
+- Description: Currency of the trade.
+
+Relationships:
+Currency → Tb_ccy_master.Currency_code
+
+Primary Key:
+id

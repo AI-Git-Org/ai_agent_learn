@@ -1,0 +1,43 @@
+Table Name: Tb_use_rate
+
+Purpose:
+Stores market reference rates and yield curve data.
+
+Business Meaning:
+Contains bid and offer rates used for pricing and calculations.
+
+Columns:
+
+id
+- Type: INT
+- Description: Auto increment identifier.
+
+As_of_rate
+- Type: DATE
+- Description: Date for the rate.
+
+yc_code
+- Type: VARCHAR(20)
+- Description: Yield curve code.
+
+Bid_rate
+- Type: DECIMAL(10,6)
+- Description: Bid rate.
+
+Offer_rate
+- Type: DECIMAL(10,6)
+- Description: Offer rate.
+
+Tenure
+- Type: VARCHAR(20)
+- Description: Duration of the rate.
+
+Currency
+- Type: VARCHAR(3)
+- Description: Associated currency.
+
+Relationships:
+Currency → Tb_contract_balance.Currency
+
+Primary Key:
+(id, As_of_rate)
