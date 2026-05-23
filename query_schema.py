@@ -19,7 +19,9 @@ embeddings=GoogleGenerativeAIEmbeddings(
     model="models/text-embedding-004",
     google_api_key=os.getenv(
         "GEMINI_API_KEY"
-    )
+    ),
+    task_type="retrieval_query",
+    output_dimensionality=1024
 )
 
 

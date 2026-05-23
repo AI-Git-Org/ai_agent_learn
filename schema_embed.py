@@ -39,7 +39,7 @@ if INDEX_NAME not in pc.list_indexes().names():
 
     pc.create_index(
         name=INDEX_NAME,
-        dimension=768,
+        dimension=1024,
         metric="cosine",
 
         spec=ServerlessSpec(
@@ -55,7 +55,9 @@ embeddings=GoogleGenerativeAIEmbeddings(
     model="models/text-embedding-004",
     google_api_key=os.getenv(
         "GEMINI_API_KEY"
-    )
+    ),
+    task_type="retrieval_document",
+    output_dimensionality=1024
 )
 
 
