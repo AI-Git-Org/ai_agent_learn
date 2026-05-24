@@ -1,99 +1,30 @@
 import os
-import time
+import uuid
 
 from dotenv import load_dotenv
 
-from pinecone import (
-    Pinecone,
-    ServerlessSpec
-)
-
-from langchain_google_genai import (
-    GoogleGenerativeAIEmbeddings
-)
-
-from langchain_pinecone import (
-    PineconeVectorStore
-)
-
-from langchain.text_splitter import (
+from pinecone import Pinecone
+from langchain_text_splitters import (
     RecursiveCharacterTextSplitter
-)
-
-from langchain.schema import (
-    Document
 )
 
 load_dotenv()
 
 
-PINECONE_API_KEY=os.getenv(
-    "PINECONE_API_KEY"
-)
-
-INDEX_NAME=os.getenv(
-    "PINECONE_INDEX"
-)
-
-GEMINI_API_KEY=os.getenv(
-    "GEMINI_API_KEY"
-)
-
-
 pc=Pinecone(
-    api_key=PINECONE_API_KEY
+    api_key=os.getenv(
+        "PINECONE_API_KEY"
+    )
 )
 
-
-if INDEX_NAME not in pc.list_indexes().names():
-
-    print(
-        "Creating Pinecone index..."
+index=pc.Index(
+    os.getenv(
+        "PINECONE_INDEX"
     )
-
-    pc.create_index(
-        name=INDEX_NAME,
-
-        dimension=1024,
-
-        metric="cosine",
-
-        spec=ServerlessSpec(
-            cloud="aws",
-            region="us-east-1"
-        )
-    )
-
-    while not pc.describe_index(
-        INDEX_NAME
-    ).status["ready"]:
-
-        time.sleep(1)
-
-    print(
-        "Index ready"
-    )
-
-else:
-
-    print(
-        "Index already exists"
-    )
-
-
-embeddings=GoogleGenerativeAIEmbeddings(
-    model="models/text-embedding-004",
-
-    google_api_key=GEMINI_API_KEY,
-
-    task_type="retrieval_document",
-
-    output_dimensionality=1024
 )
 
 
 docs=[]
-
 
 for i in range(1,7):
 
@@ -105,16 +36,8 @@ for i in range(1,7):
         encoding="utf-8"
     ) as f:
 
-        text=f.read()
-
         docs.append(
-            Document(
-                page_content=text,
-
-                metadata={
-                    "source":filename
-                }
-            )
+            f.read()
         )
 
 
@@ -124,18 +47,15 @@ splitter=RecursiveCharacterTextSplitter(
 )
 
 
-chunks=splitter.split_documents(
-    docs
-)
+chunks=[]
 
+for doc in docs:
 
-for i,chunk in enumerate(
-    chunks
-):
-
-    chunk.metadata[
-        "chunk_id"
-    ]=i
+    chunks.extend(
+        splitter.split_text(
+            doc
+        )
+    )
 
 
 print(
@@ -143,15 +63,43 @@ print(
 )
 
 
-vector_store=PineconeVectorStore.from_documents(
-    documents=chunks,
+vectors=[]
 
-    embedding=embeddings,
 
-    index_name=INDEX_NAME
+for i,chunk in enumerate(chunks):
+
+    response=pc.inference.embed(
+        model="llama-text-embed-v2",
+
+        inputs=[chunk],
+
+        parameters={
+            "input_type":"passage"
+        }
+    )
+
+    embedding=response[0]["values"]
+
+    vectors.append(
+        {
+            "id":str(uuid.uuid4()),
+
+            "values":embedding,
+
+            "metadata":{
+                "chunk_id":i,
+                "text":chunk
+            }
+        }
+    )
+
+
+index.upsert(
+    vectors=vectors,
+    namespace="schema-v1"
 )
 
 
 print(
-    "\nEmbeddings stored successfully"
+    "Embeddings stored"
 )
