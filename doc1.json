@@ -1,0 +1,70 @@
+{
+  "document_id": "tbl_currency_master",
+  "object_type": "table",
+  "table_name": "Tb_ccy_master",
+
+  "business_name": "Currency Master",
+
+  "summary": "Master table containing supported currencies and associated financial day count conventions used for interest and rate calculations.",
+
+  "business_purpose": [
+    "Stores valid currencies used across financial contracts and rate tables",
+    "Defines day count conventions for financial calculations",
+    "Acts as a reference table for balance and rate entities"
+  ],
+
+  "columns": [
+    {
+      "name": "Currency_code",
+      "type": "VARCHAR(3)",
+      "semantic_meaning": "ISO-style currency code such as USD, EUR, INR",
+      "business_terms": ["currency", "ccy", "iso currency"]
+    },
+    {
+      "name": "Day_count",
+      "type": "VARCHAR(20)",
+      "semantic_meaning": "Interest accrual day count convention",
+      "business_terms": [
+        "day count basis",
+        "interest convention",
+        "accrual convention"
+      ]
+    }
+  ],
+
+  "relationships": [
+    {
+      "related_table": "Tb_contract_balance",
+      "relationship_type": "one-to-many",
+      "join_condition": "Currency_code = Currency"
+    },
+    {
+      "related_table": "Tb_use_rate",
+      "relationship_type": "one-to-many",
+      "join_condition": "Currency_code = Currency"
+    },
+    {
+      "related_table": "Tb_ticket_balance",
+      "relationship_type": "one-to-many",
+      "join_condition": "Currency_code = Currency"
+    },
+    {
+      "related_table": "Tb_TP_rate",
+      "relationship_type": "one-to-many",
+      "join_condition": "Currency_code = Currency"
+    }
+  ],
+
+  "example_queries": [
+    "Which currencies use ACT/360 day count?",
+    "Find all balances in USD",
+    "Show rates for EUR currency"
+  ],
+
+  "domain_tags": [
+    "finance",
+    "reference-data",
+    "currency",
+    "interest-calculation"
+  ]
+}

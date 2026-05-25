@@ -9,9 +9,8 @@ def create_db_connection(
         user_password,
         db_name=None):
 
-    connection = None
-
     try:
+
         connection = mysql.connector.connect(
             host=host_name,
             user=user_name,
@@ -24,21 +23,51 @@ def create_db_connection(
             f"'{db_name if db_name else 'server'}' successful"
         )
 
+        return connection
+
     except Error as err:
+
         print(f"Connection error: {err}")
 
-    return connection
+        return None
+
+
+def execute_single_query(connection, query, message=None):
+
+    cursor = connection.cursor()
+
+    try:
+
+        cursor.execute(query)
+
+        connection.commit()
+
+        if message:
+            print(message)
+
+    except Error as err:
+
+        connection.rollback()
+
+        print(f"Query execution error: {err}")
+
+    finally:
+
+        cursor.close()
 
 
 def initialize_schema(connection, schema_file_path):
 
     if not os.path.exists(schema_file_path):
-        print(f"Schema file not found: {schema_file_path}")
-        return
 
-    print(f"Loading schema from {schema_file_path}")
+        print(f"Schema file not found: {schema_file_path}")
+
+        return False
+
+    print(f"Loading schema from '{schema_file_path}'")
 
     with open(schema_file_path, "r", encoding="utf-8") as file:
+
         sql_script = file.read()
 
     cursor = connection.cursor()
@@ -52,35 +81,28 @@ def initialize_schema(connection, schema_file_path):
             statement = statement.strip()
 
             if statement:
+
+                print(f"\nExecuting:\n{statement[:100]}...")
+
                 cursor.execute(statement)
 
         connection.commit()
 
-        print("Database initialized successfully")
+        print("\nDatabase schema initialized successfully")
+
+        return True
 
     except Error as err:
-        print(f"Schema initialization error: {err}")
+
+        connection.rollback()
+
+        print(f"\nSchema initialization error: {err}")
+
+        return False
 
     finally:
+
         cursor.close()
-
-
-def execute_query(connection, query):
-
-    cursor = connection.cursor()
-
-    try:
-        cursor.execute(query)
-        connection.commit()
-
-        print("Query executed successfully")
-
-    except Error as err:
-        print(f"Query error: {err}")
-
-    finally:
-        cursor.close()
-
 
 def read_query(connection, query):
 
@@ -101,18 +123,19 @@ def read_query(connection, query):
         return None
 
     finally:
+
         cursor.close()
 
 
 if __name__ == "__main__":
 
     DB_HOST = os.getenv("DB_HOST", "localhost")
+
     DB_USER = os.getenv("DB_USER", "root")
 
-    # replace with your MySQL password
     DB_PASSWORD = os.getenv(
         "DB_PASSWORD",
-        "root"
+        "Dbroot123$"
     )
 
     DB_NAME = os.getenv(
@@ -122,11 +145,39 @@ if __name__ == "__main__":
 
     SCHEMA_FILE = "init.sql"
 
+    print("\nConnecting to MySQL server...\n")
 
-    print(
-        f"Attempting to connect to "
-        f"'{DB_NAME}'"
+    server_connection = create_db_connection(
+        DB_HOST,
+        DB_USER,
+        DB_PASSWORD
     )
+
+    if not server_connection:
+
+        print("Unable to connect to MySQL server")
+
+        exit(1)
+
+    print(f"\nDropping database '{DB_NAME}' if it exists...\n")
+
+    execute_single_query(
+        server_connection,
+        f"DROP DATABASE IF EXISTS {DB_NAME}",
+        f"Database '{DB_NAME}' dropped"
+    )
+
+    print(f"\nCreating database '{DB_NAME}'...\n")
+
+    execute_single_query(
+        server_connection,
+        f"CREATE DATABASE {DB_NAME}",
+        f"Database '{DB_NAME}' created"
+    )
+
+    server_connection.close()
+
+    print(f"\nConnecting to '{DB_NAME}'...\n")
 
     connection = create_db_connection(
         DB_HOST,
@@ -135,70 +186,36 @@ if __name__ == "__main__":
         DB_NAME
     )
 
+    if not connection:
 
-    if connection is None:
+        print(f"Failed to connect to '{DB_NAME}'")
 
-        print(
-            "Database does not exist. "
-            "Creating..."
+        exit(1)
+
+    schema_success = initialize_schema(
+        connection,
+        SCHEMA_FILE
+    )
+
+    if schema_success:
+
+        print("\nCurrent tables:\n")
+
+        tables = read_query(
+            connection,
+            "SHOW TABLES"
         )
 
-        server_connection = create_db_connection(
-            DB_HOST,
-            DB_USER,
-            DB_PASSWORD
-        )
+        if tables:
 
-        if server_connection:
+            for table in tables:
 
-            initialize_schema(
-                server_connection,
-                SCHEMA_FILE
-            )
+                print(f"- {table[0]}")
 
-            server_connection.close()
+        else:
 
-            print(
-                "Reconnecting to created database..."
-            )
+            print("No tables found")
 
-            connection = create_db_connection(
-                DB_HOST,
-                DB_USER,
-                DB_PASSWORD,
-                DB_NAME
-            )
+    connection.close()
 
-    else:
-
-        print(
-            "Database exists."
-        )
-
-
-    if connection:
-
-        try:
-
-            print("\nCurrent tables:\n")
-
-            tables = read_query(
-                connection,
-                "SHOW TABLES"
-            )
-
-            if tables:
-
-                for table in tables:
-                    print(f"- {table[0]}")
-
-            else:
-                print("No tables found")
-
-        finally:
-
-            connection.close()
-
-            print(
-                "\nMySQL connection closed"
-            )
+    print("\nMySQL connection closed")

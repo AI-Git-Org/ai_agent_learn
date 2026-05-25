@@ -5,7 +5,7 @@ from mysql.connector import Error
 def populate_dummy_data():
     DB_HOST = os.getenv("DB_HOST", "localhost")
     DB_USER = os.getenv("DB_USER", "root")
-    DB_PASSWORD = os.getenv("DB_PASSWORD", "root")
+    DB_PASSWORD = os.getenv("DB_PASSWORD", "Dbroot123$")
     DB_NAME = os.getenv("DB_NAME", "financial_db")
 
     print(f"Connecting to '{DB_NAME}' on '{DB_HOST}' to populate exact dummy data...")

@@ -1,0 +1,76 @@
+{
+  "document_id": "tbl_contract_balance",
+  "object_type": "table",
+  "table_name": "Tb_contract_balance",
+
+  "business_name": "Contract Balance",
+
+  "summary": "Stores financial contract balances, rates, and profit/loss values as of a reporting date.",
+
+  "business_purpose": [
+    "Tracks contract exposure amounts",
+    "Stores customer rates",
+    "Captures PnL for contracts",
+    "Supports financial reporting"
+  ],
+
+  "columns": [
+    {
+      "name": "As_of_date",
+      "semantic_meaning": "Business reporting date for the balance snapshot"
+    },
+    {
+      "name": "Start_date",
+      "semantic_meaning": "Contract effective start date"
+    },
+    {
+      "name": "End_date",
+      "semantic_meaning": "Contract maturity or expiry date"
+    },
+    {
+      "name": "Amt",
+      "semantic_meaning": "Contract balance amount or exposure"
+    },
+    {
+      "name": "Cust_rate",
+      "semantic_meaning": "Customer negotiated financial rate"
+    },
+    {
+      "name": "PnL",
+      "semantic_meaning": "Profit and loss amount associated with the contract"
+    },
+    {
+      "name": "Currency",
+      "semantic_meaning": "Currency associated with the contract balance"
+    }
+  ],
+
+  "relationships": [
+    {
+      "related_table": "Tb_ccy_master",
+      "relationship_type": "many-to-one",
+      "join_condition": "Currency = Currency_code"
+    }
+  ],
+
+  "business_concepts": [
+    "financial exposure",
+    "contract valuation",
+    "mark-to-market",
+    "profit and loss"
+  ],
+
+  "example_queries": [
+    "What is the total contract exposure by currency?",
+    "Show contracts maturing this month",
+    "Find PnL by reporting date"
+  ],
+
+  "domain_tags": [
+    "finance",
+    "contracts",
+    "balance",
+    "pnl",
+    "reporting"
+  ]
+}

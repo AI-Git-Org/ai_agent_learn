@@ -1,0 +1,49 @@
+{
+  "document_id": "tbl_use_rate",
+  "object_type": "table",
+  "table_name": "Tb_use_rate",
+
+  "business_name": "Use Rate",
+
+  "summary": "Stores market or usage rates including bid and offer values across yield curves and tenures.",
+
+  "business_purpose": [
+    "Maintains pricing rates",
+    "Supports curve-based calculations",
+    "Provides market reference rates"
+  ],
+
+  "columns": [
+    {
+      "name": "As_of_rate",
+      "semantic_meaning": "Date for which the rate is applicable"
+    },
+    {
+      "name": "yc_code",
+      "semantic_meaning": "Yield curve identifier"
+    },
+    {
+      "name": "Bid_rate",
+      "semantic_meaning": "Market bid rate"
+    },
+    {
+      "name": "Offer_rate",
+      "semantic_meaning": "Market offer rate"
+    },
+    {
+      "name": "Tenure",
+      "semantic_meaning": "Duration bucket such as 1M, 3M, 1Y"
+    },
+    {
+      "name": "Currency",
+      "semantic_meaning": "Currency for the rate"
+    }
+  ],
+
+  "domain_tags": [
+    "finance",
+    "market-data",
+    "yield-curve",
+    "interest-rates"
+  ]
+}

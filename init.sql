@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS Tb_use_rate (
 
     CONSTRAINT fk_use_rate_ccy
     FOREIGN KEY (Currency)
-    REFERENCES Tb_contract_balance(Currency)
+    REFERENCES Tb_ccy_master(Currency_code)
     ON DELETE RESTRICT
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

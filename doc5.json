@@ -1,0 +1,29 @@
+{
+  "document_id": "tbl_ticket_balance",
+  "object_type": "table",
+  "table_name": "Tb_ticket_balance",
+
+  "business_name": "Ticket Balance",
+
+  "summary": "Stores ticket-level financial balances, transfer pricing rates, and PnL values.",
+
+  "business_purpose": [
+    "Tracks ticket exposure",
+    "Stores transfer pricing rates",
+    "Supports desk-level reporting"
+  ],
+
+  "columns": [
+    {
+      "name": "TP_rate",
+      "semantic_meaning": "Transfer pricing rate applied to the ticket"
+    }
+  ],
+
+  "domain_tags": [
+    "finance",
+    "ticketing",
+    "transfer-pricing",
+    "balance"
+  ]
+}

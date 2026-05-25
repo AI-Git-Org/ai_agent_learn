@@ -1,0 +1,40 @@
+{
+  "document_id": "tbl_legal_entity",
+  "object_type": "table",
+  "table_name": "Tb_LE_code",
+
+  "business_name": "Legal Entity Master",
+
+  "summary": "Reference table storing legal entity identifiers and descriptions used within the financial organization.",
+
+  "business_purpose": [
+    "Maintains legal entity codes",
+    "Supports reporting and ownership attribution",
+    "Used for organizational segmentation"
+  ],
+
+  "columns": [
+    {
+      "name": "LE_code",
+      "type": "VARCHAR(20)",
+      "semantic_meaning": "Unique legal entity identifier"
+    },
+    {
+      "name": "LE_desc",
+      "type": "VARCHAR(255)",
+      "semantic_meaning": "Description or name of the legal entity"
+    }
+  ],
+
+  "example_queries": [
+    "List all legal entities",
+    "Find entity description for LE001"
+  ],
+
+  "domain_tags": [
+    "finance",
+    "organization",
+    "legal-entity",
+    "reference-data"
+  ]
+}

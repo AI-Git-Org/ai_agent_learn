@@ -1,0 +1,36 @@
+{
+  "document_id": "tbl_tp_rate",
+  "object_type": "table",
+  "table_name": "Tb_TP_rate",
+
+  "business_name": "Transfer Pricing Rate",
+
+  "summary": "Stores transfer pricing bid and offer rates across currencies and tenures.",
+
+  "business_purpose": [
+    "Supports internal pricing calculations",
+    "Provides transfer pricing reference data"
+  ],
+
+  "columns": [
+    {
+      "name": "Bid_rate",
+      "semantic_meaning": "Internal transfer pricing bid rate"
+    },
+    {
+      "name": "Offer_rate",
+      "semantic_meaning": "Internal transfer pricing offer rate"
+    },
+    {
+      "name": "Tenure",
+      "semantic_meaning": "Rate duration bucket"
+    }
+  ],
+
+  "domain_tags": [
+    "finance",
+    "transfer-pricing",
+    "rates",
+    "market-data"
+  ]
+}
